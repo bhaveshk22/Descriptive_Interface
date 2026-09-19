@@ -19,7 +19,7 @@ export const EXAM_PROFILES = [
     name: "IBPS PO Mains — Descriptive Test",
     timerMinutes: 30,
     questions: [
-      { id: "essay", title: "Essay Writing", wordLimit: 300 },
+      { id: "essay", title: "Essay Writing", wordLimit: 250 },
       { id: "rc", title: "Comprehension(Set of 3)", wordLimit: 150 },
     ],
   },
