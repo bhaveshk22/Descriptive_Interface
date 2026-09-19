@@ -63,7 +63,7 @@ export default function AnswerBox({ initialValue, wordLimit, disabled, paused, o
               : "text-[13px] text-slate-500"
           }
         >
-          {wordCount} / {wordLimit} words
+          Words: {Math.max(wordLimit - wordCount, 0)}
         </span>
       </div>
     </div>

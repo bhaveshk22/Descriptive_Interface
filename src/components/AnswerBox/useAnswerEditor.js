@@ -24,6 +24,46 @@ import { BLOCKED_NAV_KEYS, countWords } from "../../utils/textUtils";
 //     running (no click-to-place-cursor, no drag-select, no right-click
 //     menu) — it's keyboard-only, same as the real portal
 // ---------------------------------------------------------------------------
+function scrollCaretIntoView(textarea, caretPos) {
+  const style = window.getComputedStyle(textarea);
+  const mirror = document.createElement("div");
+  const propsToCopy = [
+    "boxSizing", "width", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+    "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth",
+    "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight",
+    "letterSpacing", "wordSpacing", "textIndent",
+  ];
+  propsToCopy.forEach((p) => (mirror.style[p] = style[p]));
+  Object.assign(mirror.style, {
+    position: "absolute",
+    top: "0",
+    left: "-9999px",
+    visibility: "hidden",
+    whiteSpace: "pre-wrap",
+    wordWrap: "break-word",
+    height: "auto",
+  });
+ 
+  const marker = document.createElement("span");
+  marker.textContent = "|";
+  mirror.textContent = textarea.value.slice(0, caretPos);
+  mirror.appendChild(marker);
+  document.body.appendChild(mirror);
+ 
+  const markerTop = marker.offsetTop;
+  const markerHeight = marker.offsetHeight || parseFloat(style.lineHeight) || 20;
+  document.body.removeChild(mirror);
+ 
+  const visibleTop = textarea.scrollTop;
+  const visibleBottom = visibleTop + textarea.clientHeight;
+ 
+  if (markerTop < visibleTop) {
+    textarea.scrollTop = markerTop;
+  } else if (markerTop + markerHeight > visibleBottom) {
+    textarea.scrollTop = markerTop + markerHeight - textarea.clientHeight;
+  }
+}
+
 export function useAnswerEditor({ initialValue, wordLimit, disabled, onChange }) {
   const [value, setValue] = useState(initialValue || "");
   const [copied, setCopied] = useState(false);
@@ -36,6 +76,7 @@ export function useAnswerEditor({ initialValue, wordLimit, disabled, onChange })
     if (desiredCursorRef.current !== null && taRef.current) {
       const pos = desiredCursorRef.current;
       taRef.current.setSelectionRange(pos, pos);
+      scrollCaretIntoView(taRef.current, pos);
       desiredCursorRef.current = null;
     }
   }, [value]);
