@@ -20,7 +20,7 @@ export const EXAM_PROFILES = [
     timerMinutes: 30,
     questions: [
       { id: "essay", title: "Essay Writing", wordLimit: 250 },
-      { id: "rc", title: "Comprehension(Set of 3)", wordLimit: 150 },
+      { id: "rc", title: "Comprehension(Set of 3)", wordLimit: 200 },
     ],
   },
 ];
